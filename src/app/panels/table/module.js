@@ -275,6 +275,11 @@ function (angular, app, _, kbn, moment) {
       //row.kibana.details = !row.kibana.details ? $scope.without_kibana(row) : false;
     };
 
+    $scope.toggle_nested_field = function(row) {
+      row.kibana.expand_field = !row.kibana.expand_field;      
+      console.log("expand_field", row.kibana.expand_field);
+    }
+
     $scope.page = function(page) {
       $scope.panel.offset = page*$scope.panel.size;
       $scope.get_data();
@@ -471,16 +476,17 @@ function (angular, app, _, kbn, moment) {
 
   // This also escapes some xml sequences
   module.filter('tableHighlight', function() {
-    return function(text) {
+    return function(text, single_line) {
       if (!_.isUndefined(text) && !_.isNull(text) && text.toString().length > 0) {
         return text.toString().
           replace(/&/g, '&amp;').
           replace(/</g, '&lt;').
           replace(/>/g, '&gt;').
-          replace(/\r?\n/g, '<br/>').
+          replace(/\r?\n/g, single_line ? ' ' : '<br/>').
           replace(/@start-highlight@/g, '<code class="highlight">').
           replace(/@end-highlight@/g, '</code>');
-      }
+      }      
+      console.log('single_line', single_line);
       return '';
     };
   });
